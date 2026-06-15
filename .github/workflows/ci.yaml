@@ -40,6 +40,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore --configuration=Release
+      - name: Lint
+        run: dotnet format --verify-no-changes --no-restore
       - name: Test
         run: dotnet test --no-restore --configuration=Release --collect="XPlat Code Coverage" --results-directory=TestResults/
       - name: Pack
