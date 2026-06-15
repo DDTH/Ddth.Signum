@@ -1,18 +1,3 @@
-# This file has been cleaned up post-releasing version 0.0.0.
+# This file has been cleaned up post-releasing version 0.0.1.
 # Generate its content quickly using the following command:
 #   git log origin..HEAD | grep "^\s" > .semrelease/this_release
-#!VERSION=0.0.1
-- feat: compute checksum/fingerprint of any .NET object at the interface level
-- feat: add reflection fallback for arbitrary objects (public properties + fields)
-- feat: unify integer family so (int)5, (long)5, (byte)5 share a checksum
-- feat: share checksum between float and double of the same value
-- feat: treat Half and decimal as distinct numeric families
-- feat: distinguish families with the same value, e.g. (int)5 != (float)5 != (decimal)5
-- feat: make ordered collections (arrays, IList, IEnumerable) order-sensitive
-- feat: make unordered collections (ISet, IDictionary) order-insensitive
-- feat: support pluggable hash functions via IHasher
-- feat: default to fast non-cryptographic XxHash128 (System.IO.Hashing)
-- feat: add ISignumFingerprintable for custom per-type fingerprint contribution
-- feat: add [SignumIgnore] to exclude individual members
-- feat: detect and gracefully handle reference cycles
-- build: target .NET 6, 8, and 10
