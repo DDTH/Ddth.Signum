@@ -3,8 +3,8 @@
 [![codecov](https://codecov.io/gh/DDTH/Ddth.Signum/graph/badge.svg)](https://codecov.io/gh/DDTH/Ddth.Signum)
 [![Release](https://img.shields.io/github/release/DDTH/Ddth.Signum.svg?style=flat-square)](RELEASE-NOTES.md)
 
-Lightweight .NET library for calculating checksums and object fingerprints of *any* .NET object —
-from primitives and collections to arbitrary objects — using a pluggable hash function.
+Lightweight .NET library for calculating checksums and object fingerprints of *any* .NET object -
+from primitives and collections to arbitrary objects.
 
 ## Features
 
@@ -48,7 +48,7 @@ Signum.ChecksumHex(new HashSet<int> { 1, 2, 3 });        // unordered collection
 Signum.ChecksumHex(new { Name = "Alice", Age = 30 });    // arbitrary objects
 ```
 
-Same value, same checksum — regardless of the concrete integer type or collection order:
+Same value, same checksum - regardless of the concrete integer type or collection order:
 
 ```csharp
 Signum.ChecksumHex(5) == Signum.ChecksumHex(5L);                 // true (integer family)
