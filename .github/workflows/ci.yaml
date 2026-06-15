@@ -1,0 +1,83 @@
+name: 'ci'
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    types: [ opened, edited, reopened, synchronize, review_requested ]
+    branches: [ '*' ]
+  workflow_call:
+
+env:
+  TAG_PREFIX: v
+
+jobs:
+  BuildAndTest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: [ '6.x', '7.x', '8.x', '9.x', '10.x' ]
+    name: Build and test with .NET ${{ matrix.dotnet }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Setup .NET 6.x # min .NET required by this project is 6.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '6.x'
+      - name: Setup .NET ${{ matrix.dotnet }}
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: Choose .NET version
+        run: |
+          VERSION=$(echo ${{ matrix.dotnet }} | sed -E "s/^([0-9]+).*/\1/")
+          echo {\"sdk\": {\"version\": \"${VERSION}\"}} > global.json
+          cat global.json
+      - name: Display .NET version
+        run: dotnet --version
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore --configuration=Release
+      - name: Test
+        run: dotnet test --no-restore --configuration=Release --collect="XPlat Code Coverage" --results-directory=TestResults/
+      - name: Pack
+        run: dotnet pack --no-build --no-restore --configuration=Release -o ./
+      # - name: Codecov
+      #   uses: codecov/codecov-action@v7
+      #   with:
+      #     fail_ci_if_error: false
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./TestResults/**/*.cobertura.xml
+      #     flags: dotnet-${{ matrix.dotnet }}
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  ReleaseDryRun:
+    if: github.event_name == 'push'
+    needs: BuildAndTest
+    runs-on: ubuntu-latest
+    outputs:
+      RESULT: ${{ steps.release_dry_run.outputs.result }}
+      VERSION: ${{ steps.release_dry_run.outputs.releaseVersion }}
+      RELEASE_NOTES: ${{ steps.release_dry_run.outputs.releaseNotes }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+      - name: Install Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+      - name: Release (dry-run)
+        id: release_dry_run
+        uses: btnguyen2k/action-semrelease@v4
+        with:
+          dry-run: true
+          auto-mode: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          tag-major-release: false
+          tag-minor-release: false
+          branches: ${{ github.ref_name }}
+          tag-prefix: ${{ env.TAG_PREFIX }}
+          tag-only: true
