@@ -11,7 +11,7 @@ env:
   TAG_PREFIX: 'v'
   FILE_CHANGELOG: 'RELEASE-NOTES.md'
   DOTNET_VERSION: '6.x'
-  NUGET_PROJECT_FILE: 'Ddth.Signum.Mylib/Ddth.Signum.Mylib.csproj'
+  NUGET_PROJECT_FILE: 'Ddth.Signum/Ddth.Signum.csproj'
 
 jobs:
   CallCI:
