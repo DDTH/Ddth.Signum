@@ -40,19 +40,21 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore --configuration=Release
+      - name: Lint
+        run: dotnet format --verify-no-changes --no-restore
       - name: Test
         run: dotnet test --no-restore --configuration=Release --collect="XPlat Code Coverage" --results-directory=TestResults/
       - name: Pack
         run: dotnet pack --no-build --no-restore --configuration=Release -o ./
-      # - name: Codecov
-      #   uses: codecov/codecov-action@v7
-      #   with:
-      #     fail_ci_if_error: false
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: ./TestResults/**/*.cobertura.xml
-      #     flags: dotnet-${{ matrix.dotnet }}
-      #   env:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./TestResults/**/*.cobertura.xml
+          flags: dotnet-${{ matrix.dotnet }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   ReleaseDryRun:
     if: github.event_name == 'push'
