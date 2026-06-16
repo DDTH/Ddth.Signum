@@ -8,6 +8,9 @@ namespace Ddth.Signum;
 /// </summary>
 public sealed class XxHash128Hasher : IHasher
 {
+    /// <summary>Shared factory that creates a new <see cref="XxHash128Hasher"/> instance.</summary>
+    public static readonly Func<IHasher> Factory = () => new XxHash128Hasher();
+
     private readonly XxHash128 _inner = new();
 
     /// <inheritdoc/>

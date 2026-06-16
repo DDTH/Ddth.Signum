@@ -70,8 +70,10 @@ The library ships three hashers (all from `System.IO.Hashing`): `XxHash128Hasher
 `FingerprintOptions.HasherFactory`, or via the optional parameter on the `Signum` helper:
 
 ```csharp
-// Use a built-in hasher through the static helper:
-string hex = Signum.ChecksumHex(myObject, () => new XxHash3Hasher());
+// Use a built-in hasher through the static helper. Each hasher exposes a shared
+// `Factory` delegate, which lets the Signum helper cache and reuse a single
+// Fingerprinter per hasher type:
+string hex = Signum.ChecksumHex(myObject, XxHash3Hasher.Factory);
 ```
 
 Provide your own `IHasher` to use any other algorithm:
