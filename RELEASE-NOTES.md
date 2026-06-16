@@ -1,5 +1,11 @@
 # Ddth.Signum release notes
 
+## 2026-06-16 - v0.0.3
+
+### Fixed/Improvements
+
+- Impr: Expose shared static Factory on XxHash128Hasher, XxHash3Hasher and Crc32Hasher for cached reuse via Signum.
+
 ## 2026-06-16 - v0.0.2
 
 ### Added/Refactoring/Deprecation
