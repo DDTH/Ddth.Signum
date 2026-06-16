@@ -1,5 +1,15 @@
 # Ddth.Signum release notes
 
+## 2026-06-16 - v0.0.2
+
+### Added/Refactoring/Deprecation
+
+- Feat: Add XxHash3Hasher and Crc32Hasher pre-implemented hashers.
+
+### Fixed/Improvements
+
+- Impr: Signum.Checksum/ChecksumHex accept an optional cached hasherFactory.
+
 ## 2026-06-15 - v0.0.1
 
 ### Added/Refactoring/Deprecation
