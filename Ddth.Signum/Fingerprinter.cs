@@ -34,7 +34,8 @@ public sealed class Fingerprinter
         _hasherFactory = options?.HasherFactory ?? DefaultFactory;
     }
 
-    private static IHasher DefaultFactory() => new XxHash128Hasher();
+    // private static IHasher DefaultFactory() => new XxHash128Hasher();
+    private static XxHash128Hasher DefaultFactory() => new();
 
     /// <summary>Computes the fingerprint of <paramref name="value"/> as a byte array.</summary>
     public byte[] Compute(object? value) => new Worker(_hasherFactory).Digest(value);
