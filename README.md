@@ -19,7 +19,8 @@ from primitives and collections to arbitrary objects.
   - Unordered collections (`ISet`, `IDictionary`) are order-insensitive.
 - **Customizable.**
   - Plug in your own hash function via `IHasher`; the default is a fast, non-cryptographic
-    [`XxHash128`](https://www.nuget.org/packages/System.IO.Hashing).
+    [`XxHash128`](https://www.nuget.org/packages/System.IO.Hashing). `XxHash3` and `Crc32`
+    hashers are also provided out of the box.
   - Implement `ISignumFingerprintable` to control how a type contributes to its fingerprint.
   - Exclude individual members with `[SignumIgnore]`.
 - **Safe by default.** Reference cycles are detected and handled gracefully.
@@ -64,15 +65,24 @@ Signum.ChecksumHex(list1) == Signum.ChecksumHex(list2);          // false (order
 
 ### Using a custom hash function
 
-Provide a `FingerprintOptions.HasherFactory` to use any hash algorithm:
+The library ships three hashers (all from `System.IO.Hashing`): `XxHash128Hasher` (default,
+16-byte), `XxHash3Hasher` (8-byte) and `Crc32Hasher` (4-byte). Select one via
+`FingerprintOptions.HasherFactory`, or via the optional parameter on the `Signum` helper:
+
+```csharp
+// Use a built-in hasher through the static helper:
+string hex = Signum.ChecksumHex(myObject, () => new XxHash3Hasher());
+```
+
+Provide your own `IHasher` to use any other algorithm:
 
 ```csharp
 using System.IO.Hashing;
 using Ddth.Signum;
 
-public sealed class Crc32Hasher : IHasher
+public sealed class Crc64Hasher : IHasher
 {
-    private readonly Crc32 _inner = new();
+    private readonly Crc64 _inner = new();
     public int HashLengthInBytes => _inner.HashLengthInBytes;
     public void Append(ReadOnlySpan<byte> data) => _inner.Append(data);
     public void GetHashAndReset(Span<byte> destination) => _inner.GetHashAndReset(destination);
@@ -80,7 +90,7 @@ public sealed class Crc32Hasher : IHasher
 
 var fingerprinter = new Fingerprinter(new FingerprintOptions
 {
-    HasherFactory = () => new Crc32Hasher()
+    HasherFactory = () => new Crc64Hasher()
 });
 
 byte[] checksum = fingerprinter.Compute(myObject);
