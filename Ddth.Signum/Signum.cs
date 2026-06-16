@@ -13,7 +13,8 @@ namespace Ddth.Signum;
 /// </remarks>
 public static class Signum
 {
-    private static readonly Fingerprinter Default = new();
+    private static readonly Fingerprinter Default =
+        new(new FingerprintOptions { HasherFactory = XxHash128Hasher.Factory });
 
     private static readonly ConcurrentDictionary<Func<IHasher>, Fingerprinter> Cache = new();
 

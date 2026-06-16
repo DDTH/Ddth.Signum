@@ -9,6 +9,9 @@ namespace Ddth.Signum;
 /// </summary>
 public sealed class Crc32Hasher : IHasher
 {
+    /// <summary>Shared factory that creates a new <see cref="Crc32Hasher"/> instance.</summary>
+    public static readonly Func<IHasher> Factory = () => new Crc32Hasher();
+
     private readonly Crc32 _inner = new();
 
     /// <inheritdoc/>

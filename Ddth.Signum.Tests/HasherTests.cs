@@ -11,6 +11,31 @@ public class HasherTests
         yield return new object[] { (Func<IHasher>)(() => new Crc32Hasher()), 4 };
     }
 
+    [Fact]
+    public void Factory_CreatesNewInstanceOfExpectedType()
+    {
+        Assert.IsType<XxHash128Hasher>(XxHash128Hasher.Factory());
+        Assert.IsType<XxHash3Hasher>(XxHash3Hasher.Factory());
+        Assert.IsType<Crc32Hasher>(Crc32Hasher.Factory());
+
+        // Each invocation returns a distinct instance.
+        Assert.NotSame(XxHash3Hasher.Factory(), XxHash3Hasher.Factory());
+    }
+
+    [Fact]
+    public void Factory_MatchesEquivalentInlineFactory()
+    {
+        Assert.Equal(
+            Signum.ChecksumHex("hello", () => new XxHash3Hasher()),
+            Signum.ChecksumHex("hello", XxHash3Hasher.Factory));
+    }
+
+    [Fact]
+    public void XxHash128Factory_MatchesDefault()
+    {
+        Assert.Equal(Signum.ChecksumHex("hello"), Signum.ChecksumHex("hello", XxHash128Hasher.Factory));
+    }
+
     [Theory]
     [MemberData(nameof(Hashers))]
     public void Hasher_ProducesExpectedWidth(Func<IHasher> factory, int expectedWidth)
